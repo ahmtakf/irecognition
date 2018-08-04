@@ -36,12 +36,8 @@ public class PersonService implements IPersonService{
     }
 
     @Override
-    public boolean addPerson(Person person) {
+    public long addPerson(Person person) {
 
-        List<PersonEntity> list = personRepository.findByImage(person.getImage());
-        if (list.size() > 0) {
-            return false;
-        } else {
             PersonEntity personEntity = new PersonEntity();
             personEntity.setId(person.getId());
             personEntity.setImage("");
@@ -50,9 +46,10 @@ public class PersonService implements IPersonService{
             personEntity.setSurname(person.getSurname());
             personEntity.setGender(person.getGender());
             personEntity.setAge(person.getAge());
-            personRepository.save(personEntity);
-        }
-        return true;
+
+            personEntity = personRepository.save(personEntity);
+
+        return personEntity.getId();
     }
 
     @Override
@@ -83,11 +80,6 @@ public class PersonService implements IPersonService{
     @Override
     public void deletePerson(long personId) {
         personRepository.delete(personId);
-    }
-
-    @Override
-    public void deletePersonByImage(String image) {
-        personRepository.deleteByImage(image);
     }
 
 }

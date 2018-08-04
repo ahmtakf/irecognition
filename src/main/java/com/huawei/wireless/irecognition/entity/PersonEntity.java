@@ -14,7 +14,7 @@ public class PersonEntity implements Serializable {
     @Column(name="person_id")
     private long id;
 
-    @Column(name="image", unique = true)
+    @Column(name="image")
     private String image;
 
     @Column(name="name")

@@ -35,15 +35,22 @@ public class PersonController {
     }
 
     @PostMapping("addPerson")
-    public ResponseEntity<Boolean> addPerson(@RequestBody Person person) {
-        System.out.println("Hey " + person.getImage() + "  " + person.getName());
+    public ResponseEntity<String> addPerson(@RequestBody Person person) {
 
-        if ( personService.addPerson(person))
-            persons.put(person.getImage(), person);
-        else
-            new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        long id = personService.addPerson(person);
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        person.setId(id);
+        String image = person.getImage();
+        if (image.substring(image.length() - 3, image.length()).equals("jpg"))
+            person.setImage(id + ".jpg");
+        else if (image.substring(image.length() - 4, image.length()).equals("jpeg"))
+            person.setImage(id + ".jpeg");
+        else if (image.substring(image.length() - 3, image.length()).equals("png"))
+            person.setImage(id + ".png");
+
+        persons.put(person.getImage(), person);
+
+        return new ResponseEntity<>( person.getImage() , HttpStatus.OK);
     }
 
     @PostMapping("addImage")
@@ -66,12 +73,20 @@ public class PersonController {
         personService.deletePerson(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
     @DeleteMapping("deletePerson/{image}")
     public ResponseEntity<Void> deletePersonByImage(@PathVariable("image") String image) {
-        personService.deletePersonByImage(image);
-        persons.remove(image);
+
+        long id = 0;
+        if (image.substring(image.length() - 4, image.length()).equals(".jpg"))
+            id = Long.parseLong(image.substring(0, image.length() - 4));
+        else if (image.substring(image.length() - 5, image.length()).equals(".jpeg"))
+            id = Long.parseLong(image.substring(0, image.length() - 5));
+        else if (image.substring(image.length() - 4, image.length()).equals(".png"))
+            id = Long.parseLong(image.substring(0, image.length() - 4));
+
+        personService.deletePerson(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
 }

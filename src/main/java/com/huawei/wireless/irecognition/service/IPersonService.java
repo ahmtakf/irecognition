@@ -9,8 +9,7 @@ import java.util.List;
 public interface IPersonService {
     List<Person> getAllPersons();
     Person getPersonById(long personId);
-    boolean addPerson(Person person);
+    long addPerson(Person person);
     void updatePerson(Person person, MultipartFile file);
     void deletePerson(long personId);
-    void deletePersonByImage(String image);
 }
