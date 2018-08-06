@@ -1,10 +1,14 @@
 com\huawei\wireless\irecognition\service\StorageService.class
-com\huawei\wireless\irecognition\service\IPersonService.class
+com\huawei\wireless\irecognition\repository\ImageRepository.class
 com\huawei\wireless\irecognition\controller\PersonController.class
-com\huawei\wireless\irecognition\model\Person.class
 com\huawei\wireless\irecognition\repository\PersonRepository.class
 com\huawei\wireless\irecognition\service\PersonService.class
 com\huawei\wireless\irecognition\entity\PersonEntity.class
+com\huawei\wireless\irecognition\controller\ImageController.class
+com\huawei\wireless\irecognition\service\IPersonService.class
+com\huawei\wireless\irecognition\entity\ImageEntity.class
+com\huawei\wireless\irecognition\service\ImageService.class
+com\huawei\wireless\irecognition\service\IImageService.class
 com\huawei\wireless\irecognition\configuration\WebSecurityConfig$1.class
 com\huawei\wireless\irecognition\MainInitializer.class
 com\huawei\wireless\irecognition\configuration\WebSecurityConfig.class

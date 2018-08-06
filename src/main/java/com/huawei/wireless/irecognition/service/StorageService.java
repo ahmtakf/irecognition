@@ -22,9 +22,9 @@ public class StorageService {
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private static final Path rootLocation = Paths.get("upload-dir");
 
-    public void store(MultipartFile file) {
+    public void store(MultipartFile file, String filename) {
         try {
-            Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), rootLocation.resolve( filename));
         } catch (Exception e) {
             throw new RuntimeException("FAIL!");
         }

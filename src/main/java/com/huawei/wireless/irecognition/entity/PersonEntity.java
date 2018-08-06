@@ -2,33 +2,53 @@ package com.huawei.wireless.irecognition.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name="person")
+@Table(name = "person")
 public class PersonEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //This id is database id
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="person_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private long id;
 
-    @Column(name="image")
-    private String image;
+    //This id is smth like TC no
+    @Column(name = "person_id", unique = true)
+    private String personId;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="surname")
+    @Column(name = "surname")
     private String surname;
 
-    @Column(name="gender")
+    @Column(name = "gender")
     private boolean gender;
 
-    @Column(name="age")
+    @Column(name = "age")
     private int age;
 
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY,
+            mappedBy = "person"
+    )
+    private List<ImageEntity> images = new ArrayList<>();
+
+    public PersonEntity(){
+
+    }
+
+    public PersonEntity(long id) {
+        this.id = id;
+    }
 
     public long getId() {
         return id;
@@ -70,11 +90,20 @@ public class PersonEntity implements Serializable {
         this.age = age;
     }
 
-    public String getImage() {
-        return image;
+
+    public List<ImageEntity> getImages() {
+        return images;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImages(List<ImageEntity> images) {
+        this.images = images;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 }
