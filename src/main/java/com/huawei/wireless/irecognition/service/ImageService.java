@@ -1,17 +1,21 @@
 package com.huawei.wireless.irecognition.service;
 
+
 import com.huawei.wireless.irecognition.entity.ImageEntity;
 import com.huawei.wireless.irecognition.entity.PersonEntity;
 import com.huawei.wireless.irecognition.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ImageService implements IImageService{
+public class ImageService implements IImageService {
 
     @Autowired
     private StorageService storageService;
@@ -19,11 +23,15 @@ public class ImageService implements IImageService{
     @Autowired
     private ImageRepository imageRepository;
 
+    @Autowired
+    private RecognitionService recognitionService;
+
     @Override
     public List<ImageEntity> getAllImages() {
         List<ImageEntity> list = new ArrayList<>();
         imageRepository.findAll().forEach(e -> {
-            list.add(e);});
+            list.add(e);
+        });
 
         return list;
     }
@@ -41,20 +49,21 @@ public class ImageService implements IImageService{
 
         String imageName = file.getOriginalFilename();
         if (imageName.substring(imageName.length() - 3, imageName.length()).equals("jpg"))
-            imageEntity.setUrl( personId + "_" + getNextImageNumber(personId) + ".jpg");
+            imageEntity.setUrl(personId + "_" + getNextImageNumber(personId) + ".jpg");
         else if (imageName.substring(imageName.length() - 4, imageName.length()).equals("jpeg"))
-            imageEntity.setUrl( personId + "_" + getNextImageNumber(personId) + ".jpeg");
+            imageEntity.setUrl(personId + "_" + getNextImageNumber(personId) + ".jpeg");
         else if (imageName.substring(imageName.length() - 3, imageName.length()).equals("png"))
-            imageEntity.setUrl( personId + "_" + getNextImageNumber(personId) + ".png");
+            imageEntity.setUrl(personId + "_" + getNextImageNumber(personId) + ".png");
+
+        //Train and save xml and return resized image
+        BufferedImage image = recognitionService.trainAndSave(file, imageEntity.getUrl());
 
         try {
-            storageService.store(file, imageEntity.getUrl());
-            System.out.println( "You successfully uploaded " + file.getOriginalFilename() + "!");
+            storageService.store(image, imageEntity.getUrl());
+            System.out.println("You successfully uploaded " + file.getOriginalFilename() + "!");
         } catch (Exception e) {
-            System.out.println( "FAIL to upload " + file.getOriginalFilename() + "!");
+            System.out.println("FAIL to upload " + file.getOriginalFilename() + "!");
         }
-        //After face recognition process save the training
-        //imageEntity.setRecognizer("haha");
         imageEntity.setPerson(new PersonEntity(personId));
 
         return imageRepository.save(imageEntity).getId();
@@ -63,12 +72,14 @@ public class ImageService implements IImageService{
     @Override
     public ImageEntity updateImage(MultipartFile file, long imageId) {
         ImageEntity imageEntity = getImageById(imageId);
+        //Train and save xml and return resized image
+        BufferedImage image = recognitionService.trainAndSave(file, imageEntity.getUrl());
 
         try {
-            storageService.store(file, imageEntity.getUrl());
-            System.out.println( "You successfully uploaded " + file.getOriginalFilename() + "!");
+            storageService.store(image, imageEntity.getUrl());
+            System.out.println("You successfully uploaded " + file.getOriginalFilename() + "!");
         } catch (Exception e) {
-            System.out.println( "FAIL to upload " + file.getOriginalFilename() + "!");
+            System.out.println("FAIL to upload " + file.getOriginalFilename() + "!");
         }
         //After face recognition process save the training
         //imageEntity.setRecognizer("haha");
@@ -84,9 +95,44 @@ public class ImageService implements IImageService{
     }
 
     @Override
-    public int getNextImageNumber(long personId) {
+    public long getNextImageNumber(long personId) {
         List<ImageEntity> images = imageRepository.findImageEntitiesByPersonId(personId);
-        return images.size() + 1;
+
+        ImageEntity imageEntity = null;
+        long maxImageId = 0;
+        for (ImageEntity image : images) {
+            if (maxImageId < image.getId()) {
+                maxImageId = image.getId();
+                imageEntity = image;
+            }
+        }
+        if ( imageEntity == null)
+            return 1;
+
+        return Long.parseLong(imageEntity.getUrl().split("\\.")[0].split("_")[1]) + 1;
     }
+
+    @Override
+    public ImageEntity checkImage(MultipartFile file) {
+
+        String fileName = recognitionService.findPersonId(file);
+
+        //PersonEntity personEntity = personService.getPersonById(Long.parseLong(fileName.split("_")[0]));
+
+        return imageRepository.findImageEntityByUrl(fileName + ".jpg");
+    }
+
+    @Override
+    public Resource getImageByURL(String url) {
+        return storageService.loadFile(url);
+    }
+
+    private byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(obj);
+        return out.toByteArray();
+    }
+
 
 }

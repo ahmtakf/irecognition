@@ -1,5 +1,7 @@
 package com.huawei.wireless.irecognition.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class PersonEntity implements Serializable {
     @Column(name = "age")
     private int age;
 
-
+    @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,

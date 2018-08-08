@@ -9,5 +9,6 @@ import java.util.List;
 public interface ImageRepository extends CrudRepository<ImageEntity, Long> {
 
     List<ImageEntity> findImageEntitiesByPersonId(long personId);
+    ImageEntity findImageEntityByUrl(String url);
 
 }

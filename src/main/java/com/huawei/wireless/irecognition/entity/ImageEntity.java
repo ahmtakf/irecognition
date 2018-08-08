@@ -18,20 +18,9 @@ public class ImageEntity implements Serializable {
     @Column(name="url")
     private String url;
 
-    @Column(name="recognizer")
-    private String recognizer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private PersonEntity person;
-
-    public String getRecognizer() {
-        return recognizer;
-    }
-
-    public void setRecognizer(String recognizer) {
-        this.recognizer = recognizer;
-    }
 
     public long getId() {
         return id;

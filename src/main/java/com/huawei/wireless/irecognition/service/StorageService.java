@@ -1,5 +1,8 @@
 package com.huawei.wireless.irecognition.service;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -16,28 +19,29 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.imageio.ImageIO;
+
 @Service
 public class StorageService {
 
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    private static final Path rootLocation = Paths.get("upload-dir");
+    private static final Path rootLocation = Paths.get("uploaded-images");
 
-    public void store(MultipartFile file, String filename) {
+    public void store(BufferedImage bufferedImage, String filename) {
         try {
-            Files.copy(file.getInputStream(), rootLocation.resolve( filename));
+            File outputfile = new File(rootLocation.resolve(filename).toString());
+            ImageIO.write(bufferedImage, "jpg", outputfile);
         } catch (Exception e) {
             throw new RuntimeException("FAIL!");
         }
     }
 
-    public MultipartFile loadFile(String filename) {
+    public Resource loadFile(String filename) {
         try {
             Path path = rootLocation.resolve(filename);
             Resource resource = new UrlResource(path.toUri());
             if (resource.exists() || resource.isReadable()) {
-                DiskFileItem fileItem = new DiskFileItem("file", "text/plain", false, resource.getFile().getName(), (int) resource.getFile().length() , resource.getFile().getParentFile());
-                fileItem.getOutputStream();
-                return new CommonsMultipartFile(fileItem);
+                return resource;
             } else {
                 throw new RuntimeException("FAIL!");
             }
@@ -46,7 +50,12 @@ public class StorageService {
         }
     }
 
-    public void deleteAll() {
+    public File loadImage(String filename) {
+        return new File(rootLocation.resolve(filename).toUri());
+    }
+
+
+        public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
