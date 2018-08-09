@@ -2,6 +2,7 @@ package com.huawei.wireless.irecognition.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name="image")
@@ -17,6 +18,9 @@ public class ImageEntity implements Serializable {
     //Image name
     @Column(name="url")
     private String url;
+
+    @Column(name="upload_date")
+    private Date uploadDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
@@ -44,5 +48,13 @@ public class ImageEntity implements Serializable {
 
     public void setPerson(PersonEntity person) {
         this.person = person;
+    }
+
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
     }
 }

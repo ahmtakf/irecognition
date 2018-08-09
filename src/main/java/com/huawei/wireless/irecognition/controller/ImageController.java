@@ -40,6 +40,12 @@ public class ImageController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @GetMapping("lasttenimages")
+    public ResponseEntity<List<ImageEntity>> getLastTenImages() {
+        List<ImageEntity> list = imageService.getLastTen();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
     @PostMapping("add")
     public ResponseEntity<Long> addImage(@RequestParam("image") MultipartFile file, @RequestParam("personId") String personId) {
 

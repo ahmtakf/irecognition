@@ -11,11 +11,11 @@ import java.util.Map;
 public interface IImageService {
 
     List<ImageEntity> getAllImages();
+    List<ImageEntity> getLastTen();
     ImageEntity getImageById(long imageId);
     long addImage(MultipartFile file, long personId);
     ImageEntity updateImage(MultipartFile file, long imageId);
     void deleteImage(long imageId);
-    long getNextImageNumber(long personId);
     ImageEntity checkImage(MultipartFile file);
     Resource getImageByURL(String url);
 

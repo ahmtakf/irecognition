@@ -1,13 +1,16 @@
 package com.huawei.wireless.irecognition.controller;
 
 import com.huawei.wireless.irecognition.entity.UserEntity;
+import com.huawei.wireless.irecognition.service.IUserService;
 import com.huawei.wireless.irecognition.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.*;
 
 @Controller
@@ -15,7 +18,7 @@ import java.util.*;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @GetMapping("{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable("id") long id) {
@@ -49,6 +52,14 @@ public class UserController {
             new ResponseEntity<>(HttpStatus.CONFLICT);
 
         return new ResponseEntity<>( token, HttpStatus.OK);
+    }
+
+    @GetMapping("logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserEntity user) {
+
+        userService.logout(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("update")

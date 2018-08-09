@@ -10,5 +10,6 @@ public interface ImageRepository extends CrudRepository<ImageEntity, Long> {
 
     List<ImageEntity> findImageEntitiesByPersonId(long personId);
     ImageEntity findImageEntityByUrl(String url);
+    List<ImageEntity> findTop10ByIdIsNotNullOrderByUploadDate();
 
 }

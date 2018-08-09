@@ -3,20 +3,16 @@ package com.huawei.wireless.irecognition.service;
 import org.apache.commons.io.FilenameUtils;
 import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.javacpp.DoublePointer;
-import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.opencv_face.FaceRecognizer;
 import org.bytedeco.javacpp.opencv_face.LBPHFaceRecognizer;
 import org.bytedeco.javacpp.opencv_core.MatVector;
 import org.bytedeco.javacpp.opencv_core.Mat;
-import org.opencv.core.CvType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import sun.nio.ch.DirectBuffer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.io.*;
 import java.nio.*;
 

@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,6 +38,15 @@ public class ImageService implements IImageService {
     }
 
     @Override
+    public List<ImageEntity> getLastTen() {
+        List<ImageEntity> list = new ArrayList<>();
+        imageRepository.findTop10ByIdIsNotNullOrderByUploadDate().forEach(e -> {
+            list.add(e);
+        });
+        return list;
+    }
+
+    @Override
     public ImageEntity getImageById(long imageId) {
         return imageRepository.findOne(imageId);
     }
@@ -46,6 +56,7 @@ public class ImageService implements IImageService {
 
 
         ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setUploadDate(new Date());
 
         String imageName = file.getOriginalFilename();
         if (imageName.substring(imageName.length() - 3, imageName.length()).equals("jpg"))
@@ -94,8 +105,7 @@ public class ImageService implements IImageService {
         imageRepository.delete(imageId);
     }
 
-    @Override
-    public long getNextImageNumber(long personId) {
+    private long getNextImageNumber(long personId) {
         List<ImageEntity> images = imageRepository.findImageEntitiesByPersonId(personId);
 
         ImageEntity imageEntity = null;

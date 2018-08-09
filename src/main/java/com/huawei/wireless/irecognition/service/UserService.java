@@ -80,20 +80,30 @@ public class UserService implements IUserService{
 
         map.put("username", user.getUsername());
 
-        UserEntity temp = userRepository.findAllByUsername(user.getUsername()).get(0);
+
+        List<UserEntity> list = userRepository.findAllByUsername(user.getUsername());
+
+        if (list.size() <= 0){
+            return "";
+        }
 
         String token = tokenService.expiring(map);
-        tokenedUsers.put(user.getUsername(), temp);
+        tokenedUsers.put(user.getUsername(), list.get(0));
 
-        Optional.of(temp)
+        Optional<UserEntity> userEntity = Optional.of(list.get(0))
                 .filter(u -> Objects.equals(user.getPassword(), u.getPassword()))
                 .map(u -> findByToken(token).get());
+
+        //No such user found!
+        if (!userEntity.isPresent())
+            return "";
 
         return token;
     }
 
     @Override
     public void logout(UserEntity user) {
+
         tokenedUsers.remove(user.getUsername());
     }
 }

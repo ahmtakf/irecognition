@@ -42,6 +42,8 @@ public final class TokenAuthenticationFilter extends AbstractAuthenticationProce
                 .map(String::trim)
                 .orElseThrow(() -> new BadCredentialsException("Missing Authentication Token"));
 
+        System.out.println("Attempt : " + token);
+
         final Authentication auth = new UsernamePasswordAuthenticationToken(token, token);
         return getAuthenticationManager().authenticate(auth);
     }
