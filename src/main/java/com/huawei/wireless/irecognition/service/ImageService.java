@@ -4,8 +4,12 @@ package com.huawei.wireless.irecognition.service;
 import com.huawei.wireless.irecognition.entity.ImageEntity;
 import com.huawei.wireless.irecognition.entity.PersonEntity;
 import com.huawei.wireless.irecognition.repository.ImageRepository;
+import com.huawei.wireless.irecognition.repository.ImageTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +31,9 @@ public class ImageService implements IImageService {
     @Autowired
     private RecognitionService recognitionService;
 
+    @Autowired
+    private ImageTableRepository imageTableRepository;
+
     @Override
     public List<ImageEntity> getAllImages() {
         List<ImageEntity> list = new ArrayList<>();
@@ -38,12 +45,9 @@ public class ImageService implements IImageService {
     }
 
     @Override
-    public List<ImageEntity> getLastTen() {
-        List<ImageEntity> list = new ArrayList<>();
-        imageRepository.findTop10ByIdIsNotNullOrderByUploadDate().forEach(e -> {
-            list.add(e);
-        });
-        return list;
+    public DataTablesOutput<ImageEntity> getPage(DataTablesInput input) {
+
+        return imageTableRepository.findAll(input, source -> source);
     }
 
     @Override

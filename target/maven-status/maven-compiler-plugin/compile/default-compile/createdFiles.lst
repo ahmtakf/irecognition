@@ -5,6 +5,7 @@ com\huawei\wireless\irecognition\security\TokenAuthenticationFilter.class
 com\huawei\wireless\irecognition\entity\UserEntity.class
 com\huawei\wireless\irecognition\service\IUserService.class
 com\huawei\wireless\irecognition\service\RecognitionService.class
+com\huawei\wireless\irecognition\repository\ImageTableRepository.class
 com\huawei\wireless\irecognition\controller\ImageController.class
 com\huawei\wireless\irecognition\service\IPersonService.class
 com\huawei\wireless\irecognition\entity\ImageEntity.class

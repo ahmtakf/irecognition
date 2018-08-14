@@ -1,8 +1,6 @@
 package com.huawei.wireless.irecognition.controller;
 
 import com.huawei.wireless.irecognition.entity.ImageEntity;
-import com.huawei.wireless.irecognition.entity.PersonEntity;
-import com.huawei.wireless.irecognition.repository.ImageRepository;
 import com.huawei.wireless.irecognition.service.IImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -13,8 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +41,14 @@ public class ImageController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("lasttenimages")
-    public ResponseEntity<List<ImageEntity>> getLastTenImages() {
-        List<ImageEntity> list = imageService.getLastTen();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    @PostMapping("datatable")
+    public ResponseEntity<DataTablesOutput<ImageEntity>> getPageImages(@Valid @RequestBody DataTablesInput input) {
+
+        System.out.println(input);
+
+        DataTablesOutput<ImageEntity> dataTablesOutput = imageService.getPage(input);
+
+        return new ResponseEntity<>( dataTablesOutput, HttpStatus.OK);
     }
 
     @PostMapping("add")

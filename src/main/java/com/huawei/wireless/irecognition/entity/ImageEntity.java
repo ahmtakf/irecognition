@@ -57,4 +57,5 @@ public class ImageEntity implements Serializable {
     public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
     }
+
 }
