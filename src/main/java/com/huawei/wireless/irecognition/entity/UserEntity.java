@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,9 +22,13 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "id")
     private long id;
 
+    @NotNull
+    @Size(min=1, message="Username should have at least 1 characters")
     @Column(name = "username", unique = true)
     private String username;
 
+    @NotNull
+    @Size(min=1, message="Password should have at least 1 characters")
     @Column(name = "password")
     private String password;
 

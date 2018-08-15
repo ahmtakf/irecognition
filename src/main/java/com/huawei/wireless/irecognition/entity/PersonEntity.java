@@ -20,7 +20,7 @@ public class PersonEntity implements Serializable {
     private long id;
 
     //This id is smth like TC no
-    @Column(name = "person_id", unique = true)
+    @Column(name = "person_id", unique = true, nullable = false)
     private String personId;
 
     @Column(name = "name")
